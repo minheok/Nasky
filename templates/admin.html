@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>📋 관리자 대화 기록 보기</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .session {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #f9f9f9;
+    }
+    .message {
+      margin-left: 20px;
+      margin-bottom: 10px;
+    }
+    .role {
+      font-weight: bold;
+      color: #007BFF;
+    }
+    .content {
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 관리자 대화 기록 보기</h1>
+
+  {% if chat_logs %}
+    {% for session_id, messages in chat_logs.items() %}
+      <div class="session">
+        <h3>세션 ID: {{ session_id }}</h3>
+        {% for message in messages %}
+          <div class="message">
+            <span class="role">{{ message.role }}:</span>
+            <div class="content">{{ message.content }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>저장된 대화 기록이 없습니다.</p>
+  {% endif %}
+</body>
+</html>

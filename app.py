@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from multi_file_parser import extract_texts_from_folder
 
+import json
 import os
 
 
@@ -25,6 +26,27 @@ file_knowledge = extract_texts_from_folder(data_folder)
 
 # 사용자별 대화 기록 저장용 딕셔너리 (서버가 실행되는 동안만 유지)
 chat_histories = {}
+
+# 전체 대화 로그 저장 파일
+LOG_FILE = "chat_logs.json"
+
+# 대화 로그 파일에 저장
+def save_chat_log(session_id, user_message, bot_message):
+    log = {
+        "session_id": session_id,
+        "user": user_message,
+        "bot": bot_message,
+        "timestamp": str(uuid4())
+    }
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r", encoding="utf-8") as f:
+            logs = json.load(f)
+    else:
+        logs = []
+    logs.append(log)
+    with open(LOG_FILE, "w", encoding="utf-8") as f:
+        json.dump(logs, f, ensure_ascii=False, indent=2)
+
 
 # 기본 페이지 렌더링
 @app.route("/")
@@ -71,6 +93,9 @@ def ask():
     # 응답을 대화 기록에 추가
     chat_histories[session_id].append({"role": "assistant", "content": reply})
 
+    # 대화 로그 저장
+    save_chat_log(session_id, user_message, reply)
+
     # JSON 형식으로 응답 반환
     return jsonify({"reply": reply})
 
@@ -82,6 +107,16 @@ def history():
     else:
         return "대화 기록이 없습니다.", 404
 
+
+# 관리자용 전체 로그 보기
+@app.route("/admin")
+def admin():
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r", encoding="utf-8") as f:
+            logs = json.load(f)
+    else:
+        logs = []
+    return render_template("admin.html", logs=logs)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
