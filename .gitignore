@@ -1,0 +1,10 @@
+#.env 파일 무시
+.env
+
+#.env 파일이 이미 깃에 커밋된 적이 있다면, 추적을 피하기 위한 명령어
+git rm --cached .env
+git commit -m "Remove .env from version control"
+
+__pycache__/
+*.pyc
+

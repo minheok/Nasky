@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대화 기록</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .user {
+            color: blue;
+            font-weight: bold;
+        }
+        .assistant {
+            color: green;
+            font-weight: bold;
+        }
+        .system {
+            color: gray;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>대화 기록</h1>
+    <div>
+        {% if chat_histories %}
+            <ul>
+            {% for message in chat_histories %}
+                <li class="message">
+                    {% if message.role == 'user' %}
+                        <span class="user">사용자:</span> {{ message.content }}
+                    {% elif message.role == 'assistant' %}
+                        <span class="assistant">챗봇:</span> {{ message.content }}
+                    {% else %}
+                        <span class="system">시스템:</span> {{ message.content }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>대화 기록이 없습니다.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
