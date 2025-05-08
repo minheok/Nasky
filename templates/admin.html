@@ -2,52 +2,17 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>📋 관리자 대화 기록 보기</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 20px;
-    }
-    h1 {
-      color: #333;
-    }
-    .session {
-      border: 1px solid #ccc;
-      padding: 15px;
-      margin-bottom: 20px;
-      background-color: #f9f9f9;
-    }
-    .message {
-      margin-left: 20px;
-      margin-bottom: 10px;
-    }
-    .role {
-      font-weight: bold;
-      color: #007BFF;
-    }
-    .content {
-      white-space: pre-wrap;
-    }
-  </style>
+  <title>관리자 페이지</title>
 </head>
 <body>
-  <h1>📋 관리자 대화 기록 보기</h1>
-
-  {% if chat_logs %}
-    {% for session_id, messages in chat_logs.items() %}
-      <div class="session">
-        <h3>세션 ID: {{ session_id }}</h3>
-        {% for message in messages %}
-            {% if msg.role != "system" %}
-                <div class="message">
-                    <strong>{{ msg.role }}:</strong> {{ msg.content }}
-                </div>
-            {% endif %}
-        {% endfor %}
-      </div>
-    {% endfor %}
-  {% else %}
-    <p>저장된 대화 기록이 없습니다.</p>
-  {% endif %}
+  <h2>👨‍💼 관리자 페이지</h2>
+  {% for user, logs in all_histories.items() %}
+    <h3>사용자 ID: {{ user }}</h3>
+    <ul>
+      {% for log in logs %}
+        <li><strong>{{ log.role }}:</strong> {{ log.content }}</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
 </body>
 </html>

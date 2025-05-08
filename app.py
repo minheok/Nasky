@@ -116,7 +116,7 @@ def admin():
             logs = json.load(f)
     else:
         logs = []
-    return render_template("admin.html", chat_logs=chat_histories)
+    return render_template("admin.html", all_histories=chat_histories)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
