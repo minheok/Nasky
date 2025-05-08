@@ -38,10 +38,11 @@
       <div class="session">
         <h3>세션 ID: {{ session_id }}</h3>
         {% for message in messages %}
-          <div class="message">
-            <span class="role">{{ message.role }}:</span>
-            <div class="content">{{ message.content }}</div>
-          </div>
+            {% if msg.role != "system" %}
+                <div class="message">
+                    <strong>{{ msg.role }}:</strong> {{ msg.content }}
+                </div>
+            {% endif %}
         {% endfor %}
       </div>
     {% endfor %}
