@@ -2,17 +2,50 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>관리자 페이지</title>
+  <title>관리자 페이지 - 대화 기록</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+    .user-section {
+      margin-bottom: 30px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    .chat-entry {
+      margin: 5px 0;
+      padding: 5px;
+    }
+    .user {
+      color: #007BFF;
+    }
+    .assistant {
+      color: #28A745;
+    }
+  </style>
 </head>
 <body>
-  <h2>👨‍💼 관리자 페이지</h2>
-  {% for user, logs in all_histories.items() %}
-    <h3>사용자 ID: {{ user }}</h3>
-    <ul>
-      {% for log in logs %}
-        <li><strong>{{ log.role }}:</strong> {{ log.content }}</li>
-      {% endfor %}
-    </ul>
+  <h2>👨‍💼 관리자 페이지 - 대화 기록</h2>
+
+  {% for session_id, history in all_histories.items() %}
+    <div class="user-section">
+      <h3>사용자 ID: {{ session_id }}</h3>
+      <div>
+        {% for entry in history %}
+          {% if entry.role != 'system' %}
+            <div class="chat-entry {{ entry.role }}">
+              <strong>{{ entry.role }}:</strong> {{ entry.content | e }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
   {% endfor %}
+
 </body>
 </html>
