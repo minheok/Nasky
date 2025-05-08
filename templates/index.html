@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>메이킹 교육 챗봇</title>
+  <title>메이킹 교육 챗봇 Nasky</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
@@ -10,56 +10,101 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      margin: 30px;
+      background-color: #f2f4f8;
+      margin: 0;
+      padding: 30px;
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      color: #1f4e79;
+      margin-bottom: 20px;
     }
     #chat-box {
-      height: 400px;
-      overflow-y: scroll;
-      border: 1px solid #ccc;
-      padding: 10px;
-      background: #f9f9f9;
+      height: 500px;
+      overflow-y: auto;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid #d0d7de;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
     }
-    .chatbot-text {
+    .chat-message {
+      margin-bottom: 12px;
+    }
+    .chat-message.user {
+      text-align: right;
+    }
+    .chat-message.bot {
+      text-align: left;
+    }
+    .chat-bubble {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 80%;
       font-size: 16px;
-      line-height: 1.6;
+      line-height: 1.5;
       white-space: pre-wrap;
+    }
+    .chat-message.user .chat-bubble {
+      background-color: #d7e9f7;
+      color: #000;
+    }
+    .chat-message.bot .chat-bubble {
+      background-color: #e5e5e5;
+      color: #000;
     }
     #user-input {
       width: 70%;
       font-size: 16px;
-      padding: 8px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       white-space: pre-wrap;
       word-wrap: break-word;
     }
     button {
-      padding: 8px 12px;
+      padding: 10px 14px;
       font-size: 16px;
+      background-color: #1f4e79;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    button:hover {
+      background-color: #163b5c;
     }
   </style>
 </head>
 <body>
   <h2>🤖 메이킹 교육 챗봇 Nasky</h2>
   <div id="chat-box"></div>
-  <input type="text" id="user-input" placeholder="질문을 입력하세요" style="width: 70%;">
-  <button onclick="sendMessage()">보내기</button>
-  <a href="/history"><button>대화 기록 보기</button></a>
+  <div style="margin-top: 10px;">
+    <input type="text" id="user-input" placeholder="질문을 입력하세요">
+    <button onclick="sendMessage()">보내기</button>
+    <a href="/history"><button>대화 기록 보기</button></a>
+  </div>
 
   <script>
-
     function sendMessage() {
       const input = document.getElementById("user-input");
       const message = input.value;
+      if (!message.trim()) return;
+
       input.value = "";
 
       const chatBox = document.getElementById("chat-box");
 
-      // 사용자의 입력 스타일 가져오기
-      const userInputStyle = window.getComputedStyle(input);
-      const userFontSize = userInputStyle.fontSize;
-      const userFontWeight = userInputStyle.fontWeight;
-
-      // 사용자 입력 텍스트 추가
-      chatBox.innerHTML += `<p><strong>👤 나:</strong> ${message}</p>`;
+      // 사용자 메시지 출력
+      const userMsg = document.createElement("div");
+      userMsg.className = "chat-message user";
+      userMsg.innerHTML = `<div class="chat-bubble">${message}</div>`;
+      chatBox.appendChild(userMsg);
 
       fetch("/ask", {
         method: "POST",
@@ -70,45 +115,37 @@
       .then(data => {
         const reply = data.reply;
 
-        const container = document.createElement("div");
-        container.innerHTML = `
-          <p><strong>🤖 Nasky:</strong></p><pre id="typing-area" style="white-space:pre-wrap;"></pre>
-          <div id="typing-area" class="chatbot-text"></div>`;
-        chatBox.appendChild(container);
+        const botMsg = document.createElement("div");
+        botMsg.className = "chat-message bot";
+        const typingDiv = document.createElement("div");
+        typingDiv.className = "chat-bubble chatbot-text";
+        botMsg.appendChild(typingDiv);
+        chatBox.appendChild(botMsg);
 
-        const typingArea = container.querySelector("#typing-area");
         let i = 0;
-
         function typeEffect() {
           if (i < reply.length) {
-            typingArea.textContent += reply.charAt(i);
+            typingDiv.textContent += reply.charAt(i);
             i++;
             chatBox.scrollTop = chatBox.scrollHeight;
-            setTimeout(typeEffect, 15);  // 속도 조절
+            setTimeout(typeEffect, 15);
           } else {
-            // 마크다운 변환 후 HTML로 교체
+            // 마크다운 파싱 + 코드 하이라이트
             const parsed = marked.parse(reply);
-            
-            // 사용자 입력과 동일한 스타일 적용
-            const styledReply = `<div style="font-size: ${userFontSize}; font-weight: ${userFontWeight};">${parsed}</div>`;
-            typingArea.outerHTML = styledReply;
+            typingDiv.innerHTML = parsed;
             hljs.highlightAll();
           }
         }
 
-        typeEffect(); // 애니메이션 시작
+        typeEffect();
       });
     }
 
-    // Shift + Enter로 줄바꿈 처리, Enter로 메시지 전송
     const userInput = document.getElementById("user-input");
-
     userInput.addEventListener("keydown", function(event) {
       if (event.key === "Enter" && event.shiftKey) {
-        // Shift + Enter일 때 줄바꿈
         userInput.value += "\n";
       } else if (event.key === "Enter") {
-        // 그냥 Enter일 때 메시지 전송
         event.preventDefault();
         sendMessage();
       }
@@ -116,10 +153,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
