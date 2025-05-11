@@ -134,3 +134,15 @@ def name():
         return redirect("/")
     return render_template("name.html")
 
+
+@app.route("/name", methods=["GET", "POST"])
+def name_input():
+    if request.method == "POST":
+        user_name = request.form.get("username")
+        if user_name:
+            session["user_name"] = user_name
+            session["session_id"] = str(uuid4())  # 이름 입력 후 session_id도 생성
+            return redirect("/")  # 이름 입력 후 메인 페이지로 이동
+    return render_template("name.html")  # 이름 입력 폼 렌더링
+
+
