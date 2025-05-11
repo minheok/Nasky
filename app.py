@@ -66,7 +66,7 @@ def ask():
         chat_histories[session_id] = [{
             "role": "system",
             "content": (
-                "너는 메이킹 교육 분야에 특화된 교육용 챗봇 Nasky야.\n"
+                "너는 메이킹 교육 분야에 특화된 교육용 챗봇 Nasky(나스키)야.\n"
                 "질문은 미리 학습된 문서 자료(.pdf, .docx, .pptx)를 기반으로 답해야 해.\n"
                 "다음은 학습된 자료야:\n\n" + file_knowledge + "\n\n"
                 "답변 형식:\n"
