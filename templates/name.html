@@ -1,15 +1,32 @@
-<!-- templates/name.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>이름 입력</title>
+    <meta charset="UTF-8">
+    <title>이름 입력</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 100px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 250px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h2>👤 사용자의 이름을 입력해주세요</h2>
-  <form method="POST" action="/set_name">
-    <input type="text" name="username" placeholder="이름을 입력하세요" required>
-    <button type="submit">확인</button>
-  </form>
+    <h2>챗봇 사용을 위해 이름을 입력해주세요</h2>
+    <form method="POST" action="/name">
+        <input type="text" name="name" placeholder="이름을 입력하세요" required>
+        <br>
+        <button type="submit">시작하기</button>
+    </form>
 </body>
 </html>

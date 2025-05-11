@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, session
+from flask import Flask, request, render_template, jsonify, session, redirect
 from openai import OpenAI
 from dotenv import load_dotenv  #dotenv 불러오기
 from uuid import uuid4
@@ -51,6 +51,10 @@ def save_chat_log(session_id, user_message, bot_message):
 # 기본 페이지 렌더링
 @app.route("/")
 def index():
+    # 세션에 사용자 이름이 없다면 이름 입력 페이지로 리디렉션
+    if "username" not in session:
+        return redirect("/name")
+    
     if "session_id" not in session:
         session["session_id"] = str(uuid4())  # 사용자가 처음 접속하면 고유한 session_id 생성
     return render_template("index.html")
@@ -121,3 +125,12 @@ def admin():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+    
+    
+@app.route("/name", methods=["GET", "POST"])
+def name():
+    if request.method == "POST":
+        session["username"] = request.form["name"]
+        return redirect("/")
+    return render_template("name.html")
+
