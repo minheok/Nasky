@@ -27,6 +27,9 @@ file_knowledge = extract_texts_from_folder(data_folder)
 # 사용자별 대화 기록 저장용 딕셔너리 (서버가 실행되는 동안만 유지)
 chat_histories = {}
 
+# 사용자 이름 저장용 딕셔너리
+usernames = {}
+
 # 전체 대화 로그 저장 파일
 LOG_FILE = "chat_logs.json"
 
@@ -80,11 +83,16 @@ def ask():
                 "- 항상 개념 설명 → 예시 → 질문 유도로 답변할 것"
             )
           }]
+        
+          # 사용자 이름도 저장
+        usernames[session_id] = session.get("username", "이름없음")
+        
         # "" 안에 내용을 어떻게 구성하냐에 따라 챗봇의 답변을 유도할 수 있다.
                                                                                 
     # 사용자 메시지를 대화 기록에 추가
     chat_histories[session_id].append({"role": "user", "content": user_message})
 
+    
     # OpenAI API로 대답 생성
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -120,7 +128,17 @@ def admin():
             logs = json.load(f)
     else:
         logs = []
-    return render_template("admin.html", all_histories=chat_histories)
+        
+    all_logs = []
+    for session_id, messages in chat_histories.items():
+        name = usernames.get(session_id, "이름없음")
+        all_logs.append({
+            "session_id": session_id,
+            "username": name,
+            "messages": messages
+        }) 
+        
+    return render_template("admin.html", all_histories=chat_histories, usernames=usernames)
 
 @app.route("/name", methods=["GET", "POST"])
 def name_input():
@@ -129,6 +147,10 @@ def name_input():
         if user_name:
             session["username"] = user_name        #저장할 때와 검사할 때 유저네임을 통일 시켜줘야함
             session["session_id"] = str(uuid4())  # 이름 입력 후 session_id도 생성
+            
+            # 이름을 usernames 딕셔너리에 저장
+            usernames[session["session_id"]] = user_name
+            
             return redirect("/")  # 이름 입력 후 메인 페이지로 이동
     return render_template("name.html")  # 이름 입력 폼 렌더링
 

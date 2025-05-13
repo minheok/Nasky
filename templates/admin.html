@@ -34,7 +34,8 @@
 
   {% for session_id, history in all_histories.items() %}
     <div class="user-section">
-      <h3>사용자 ID: {{ session_id }}</h3>
+      <h3>사용자 : {{ usernames[session_id] if session_id in usernames else '이름없음'}}</h3>
+      <small style="color: #666;">(세션 ID: {{ session_id }})</small>
       <div>
         {% for entry in history %}
           {% if entry.role != 'system' %}
