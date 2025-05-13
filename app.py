@@ -122,11 +122,6 @@ def admin():
         logs = []
     return render_template("admin.html", all_histories=chat_histories)
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-    
-
 @app.route("/name", methods=["GET", "POST"])
 def name_input():
     if request.method == "POST":
@@ -136,5 +131,12 @@ def name_input():
             session["session_id"] = str(uuid4())  # 이름 입력 후 session_id도 생성
             return redirect("/")  # 이름 입력 후 메인 페이지로 이동
     return render_template("name.html")  # 이름 입력 폼 렌더링
+
+if __name__ == "__main__":                      #코드의 맨 마지막에 있어야 함함
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+    
+
+
 
 
