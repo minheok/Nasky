@@ -132,7 +132,7 @@ def name_input():
     if request.method == "POST":
         user_name = request.form.get("username")
         if user_name:
-            session["user_name"] = user_name
+            session["username"] = user_name        #저장할 때와 검사할 때 유저네임을 통일 시켜줘야함
             session["session_id"] = str(uuid4())  # 이름 입력 후 session_id도 생성
             return redirect("/")  # 이름 입력 후 메인 페이지로 이동
     return render_template("name.html")  # 이름 입력 폼 렌더링
