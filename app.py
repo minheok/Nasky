@@ -135,7 +135,16 @@ def ask():
 
 
 def enhance_prompt(prompt):
-    return f"디지털 아트 스타일로 묘사된, {prompt} (세부 묘사 포함)"
+    # 단순 명령문을 DALL·E가 이해할 수 있는 '묘사형' 프롬프트로 자동 변환
+    base = prompt.lower()
+
+    if "그려줘" in base or "그림" in base or "이미지" in base or "생성해줘" in base:
+        # 명령어 제거
+        for word in ["그려줘", "그림", "이미지", "생성해줘", "그려", "그림을"]:
+            base = base.replace(word, "")
+    
+    # 프롬프트 보정
+    return f"{base.strip()}를 묘사한 디지털 일러스트 스타일 이미지, 고해상도, 세부 묘사 포함"
 
 
 @app.route("/history")
