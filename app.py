@@ -88,11 +88,33 @@ def ask():
         usernames[session_id] = session.get("username", "이름없음")
         
         # "" 안에 내용을 어떻게 구성하냐에 따라 챗봇의 답변을 유도할 수 있다.
-                                                                                
+    
+    
+    # 🎨 이미지 생성 요청 감지
+    if any(kw in user_message for kw in ["이미지", "그림", "그려줘", "생성해줘"]):
+        try:
+            image_response = client.images.generate(
+                prompt=user_message,
+                size="1024x1024",
+                n=1
+            )
+            image_url = image_response.data[0].url
+            reply = f"이미지를 생성했어요!<br><img src='{image_url}' alt='생성된 이미지' style='max-width:100%;'>"
+        except Exception as e:
+            reply = f"이미지를 생성하는 중 오류가 발생했어요: {str(e)}"
+
+        # 대화 기록 저장
+        chat_histories[session_id].append({"role": "user", "content": user_message})
+        chat_histories[session_id].append({"role": "assistant", "content": reply})
+        save_chat_log(session_id, user_message, reply)
+        return jsonify({"reply": reply})
+    
+
+    ##########################################
+                                                                
     # 사용자 메시지를 대화 기록에 추가
     chat_histories[session_id].append({"role": "user", "content": user_message})
 
-    
     # OpenAI API로 대답 생성
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -154,7 +176,7 @@ def name_input():
             return redirect("/")  # 이름 입력 후 메인 페이지로 이동
     return render_template("name.html")  # 이름 입력 폼 렌더링
 
-if __name__ == "__main__":                      #코드의 맨 마지막에 있어야 함함
+if __name__ == "__main__":                      #코드의 맨 마지막에 있어야 함
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
     

@@ -124,6 +124,15 @@
 
         let i = 0;
         function typeEffect() {
+          // 이미지 응답이면 마크다운 파싱 생략하고 바로 렌더링
+          if (reply.includes("<img")) {
+            typingDiv.innerHTML = reply;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            hljs.highlightAll();
+            return;
+          }
+          
+          //일반 텍스트 응답은 타이핑 효과 + 마크다운 파싱
           if (i < reply.length) {
             typingDiv.textContent += reply.charAt(i);
             i++;
