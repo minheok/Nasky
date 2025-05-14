@@ -94,8 +94,8 @@ def ask():
     if any(kw in user_message for kw in ["이미지", "그림", "그려줘", "생성해줘"]):
         try:
             image_response = client.images.generate(
-                prompt=user_message,
-                size="1024x1024",
+                prompt=enhance_prompt(user_message),
+                size="512x512",
                 n=1
             )
             image_url = image_response.data[0].url
@@ -132,6 +132,11 @@ def ask():
 
     # JSON 형식으로 응답 반환
     return jsonify({"reply": reply})
+
+
+def enhance_prompt(prompt):
+    return f"디지털 아트 스타일로 묘사된, {prompt} (세부 묘사 포함)"
+
 
 @app.route("/history")
 def history():
