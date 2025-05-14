@@ -94,8 +94,10 @@ def ask():
     if any(kw in user_message for kw in ["이미지", "그림", "그려줘", "생성해줘"]):
         try:
             image_response = client.images.generate(
+                model="dall-e-3",
                 prompt=enhance_prompt(user_message),
                 size="512x512",
+                quality="standard",
                 n=1
             )
             image_url = image_response.data[0].url
