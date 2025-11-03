@@ -10,12 +10,15 @@
 
 
 접속 방법)
+
 사용자 페이지 : 링크를 통해 접속 =>
 https://nasky-chatbot.onrender.com
+
 이름을 작성하고 챗봇 사용 가능
 
 관리자 페이지 : 링크를 통해 접속 =>
 https://nasky-chatbot.onrender.com/admin
+
 사용자들의 이름과 세션 ID, 대화 기록 열람 가능
 
 
